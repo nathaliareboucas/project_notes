@@ -1,15 +1,19 @@
 // configurações
 const express = require('express');
 const exphbs = require('express-handlebars');
-const bodyParser = require('body-parser');
 
 const app = express();
 const port = 8000;
+
+// db
+const db = require('./db/connection');
 
 // template engine
 app.engine('handlebars', exphbs.engine());
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
+app.use(express.urlencoded({extended: true})); 
+app.use(express.json());  
 
 // importação de rotas
 const notesRoutes = require('./routes/notes');
@@ -21,6 +25,13 @@ app.get('/', function(req, res) {
 
 app.use('/notes', notesRoutes);
 
-app.listen(port, () => {
-    console.log(`Projeto rodando na porta: ${port}`)
-});
+db.initDb((err, db) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('O banco conectou com sucesso');
+        app.listen(port, () => {
+            console.log(`Projeto rodando na porta: ${port}`)
+        });
+    }
+})
