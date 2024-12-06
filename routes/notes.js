@@ -32,4 +32,15 @@ router.post('/delete', function(req, res) {
     res.redirect(301, '/')
 })
 
+// detalhes da nota
+router.get('/:id', async function(req, res) {
+    const noteId = ObjectId.createFromHexString(req.params.id);
+    const note = await db.getDb()
+        .db()
+        .collection('notes')
+        .findOne({_id: noteId})
+
+    res.render('notes/details', {note})
+})
+
 module.exports = router;
