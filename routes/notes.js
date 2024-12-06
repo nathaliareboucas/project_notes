@@ -20,4 +20,16 @@ router.post('/', function(req, res) {
     res.redirect(301, '/');
 })
 
+// remoção de nota
+router.post('/delete', function(req, res) {
+    const data = req.body;
+    const noteId = ObjectId.createFromHexString(data.id);
+    db.getDb()
+        .db()
+        .collection('notes')
+        .deleteOne({_id: noteId})
+    
+    res.redirect(301, '/')
+})
+
 module.exports = router;
